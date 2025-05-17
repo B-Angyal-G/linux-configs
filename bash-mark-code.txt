@@ -1,0 +1,299 @@
+2. Gyors mentés aktuális könyvtárhoz (mark és jump)
+
+mark() {
+  echo "cd $(pwd)" > ~/.lastdir
+}
+jump() {
+  source ~/.lastdir
+}
+
+👉 mark elmenti az aktuális helyet, jump visszavisz oda.
+
+a jump parancsnál lehet másképp végrehajtatni egy utasítást a source-on kívül?
+ChatGPT said:
+
+Igen, teljesen jogos a kérdés: a source ~/.lastdir egy kicsit „hackes”, mert a fájlban egy cd ... parancs van, és a source lefuttatja az egész sort, ami nem mindig szép vagy biztonságos. Ha szeretnél biztonságosabb és tisztább megoldást, akkor több lehetőséged is van:
+✅ 1. Fájlban csak az útvonal, és cd-vel használod
+
+Ez a legtisztább, egyszerű megoldás.
+mark és jump újraírva:
+
+mark() {
+    pwd > ~/.lastdir
+}
+
+jump() {
+    if [[ -f ~/.lastdir ]]; then
+        cd "$(cat ~/.lastdir)"
+    else
+        echo "Nincs elmentett útvonal."
+    fi
+}
+
+Használat:
+
+mark       # Elmenti az aktuális könyvtárat
+jump       # Visszaugrik ide
+
+🧠 Előnyök:
+
+    Nem futtat le semmilyen kódot a fájlból, csak adatot olvas.
+
+    Nincs szükség source-ra.
+
+    Sokkal biztonságosabb (nem fut véletlen parancsot, amit valaki beleírt a fájlba).
+
+🚫 Alternatíva, amit ne csinálj:
+
+eval "$(cat ~/.lastdir)"
+
+Ez működik, de ugyanolyan veszélyes, mint a source, ha a fájlba bekerül valami váratlan.
+
+Ha szeretnél több mark helyet is kezelni (pl. több kedvenc könyvtár), akkor tudok segíteni egy egyszerű „könyvjelzős” rendszer kiépítésében is (marks, goto parancsokkal). Érdekel ilyen is?
+You said:
+igen érdekel
+ChatGPT said:
+
+Nagyszerű! 🎯 Egy "könyvjelzős" rendszer Bash-ben nagyon kényelmessé tudja tenni a fájlrendszerben való navigálást – olyan, mintha saját névvel ellátott mappáid lennének, amikhez bármikor gyorsan visszaugorhatsz.
+📌 Cél: mark <név>, goto <név>, marks és unmark <név> parancsok
+🗂️ Struktúra
+
+Minden könyvjelző egy sima név-útvonal páros lesz egy fájlban, pl:
+
+projektek=/home/user/dev/projects
+munka=/home/user/work
+
+🧠 Kód: Tedd be ezt a .bashrc-ed végére
+
+# Könyvjelző fájl helye
+export MARKS_FILE="$HOME/.marks"
+
+# Könyvjelző létrehozása
+mark() {
+  if [[ -z "$1" ]]; then
+    echo "Használat: mark <név>"
+    return 1
+  fi
+  mkdir -p "$(pwd)" 2>/dev/null
+  grep -v "^$1=" "$MARKS_FILE" 2>/dev/null > "$MARKS_FILE.tmp"
+  echo "$1=$(pwd)" >> "$MARKS_FILE.tmp"
+  mv "$MARKS_FILE.tmp" "$MARKS_FILE"
+  echo "📍 Könyvjelző létrehozva: $1 -> $(pwd)"
+}
+
+# Ugrás egy könyvjelzőre
+goto() {
+  if [[ -z "$1" ]]; then
+    echo "Használat: goto <név>"
+    return 1
+  fi
+  local path
+  path=$(grep "^$1=" "$MARKS_FILE" | cut -d '=' -f2-)
+  if [[ -d "$path" ]]; then
+    cd "$path"
+  else
+    echo "❌ Nincs ilyen könyvjelző: $1"
+  fi
+}
+
+# Könyvjelzők listázása
+marks() {
+  if [[ -f "$MARKS_FILE" ]]; then
+    echo "📚 Könyvjelzők:"
+    cat "$MARKS_FILE"
+  else
+    echo "Nincs elmentett könyvjelző."
+  fi
+}
+
+# Könyvjelző törlése
+unmark() {
+  if [[ -z "$1" ]]; then
+    echo "Használat: unmark <név>"
+    return 1
+  fi
+  grep -v "^$1=" "$MARKS_FILE" > "$MARKS_FILE.tmp"
+  mv "$MARKS_FILE.tmp" "$MARKS_FILE"
+  echo "🗑️ Könyvjelző törölve: $1"
+}
+
+🔧 Használat példák:
+
+cd ~/projektek/valami
+mark projekt1        # 📍 elmenti "projekt1" néven az aktuális mappát
+
+goto projekt1        # 🔁 ide ugrik vissza
+
+marks                # 📜 listázza az összes elmentett könyvjelzőt
+
+unmark projekt1      # ❌ törli
+
+✅ Előnyök:
+
+    Egyszerű, nem kell semmilyen külső csomag.
+
+    Fájlban tárolt könyvjelzők, könnyen szerkeszthetők.
+
+    Bármely shellből elérhető, amíg a .bashrc be van töltve.
+
+Szeretnél hozzá tab-kiegészítést is (hogy goto után Tab-bal kihozza a könyvjelzők neveit)? Szívesen megírom azt is.
+You said:
+jó lenne az is
+ChatGPT said:
+
+Szuper! 😄 A Tab-kiegészítés (bash-completion) hozzáadása a goto és unmark parancsokhoz jelentősen javítja a használhatóságot. Megcsináljuk úgy, hogy automatikusan felismerje az elmentett könyvjelzőneveket.
+⚙️ 1. Tab-kiegészítés kódja (.bashrc végére)
+
+Tedd a következő részt az előző mark/goto funkciók alá:
+
+# --- Tab kiegészítés GOTO és UNMARK parancshoz ---
+_mark_complete() {
+  local curr_word marks_list
+  curr_word="${COMP_WORDS[COMP_CWORD]}"
+  marks_list=$(cut -d= -f1 "$MARKS_FILE" 2>/dev/null)
+  COMPREPLY=( $(compgen -W "$marks_list" -- "$curr_word") )
+}
+
+complete -F _mark_complete goto
+complete -F _mark_complete unmark
+
+✅ Mit csinál ez?
+
+    COMP_WORDS[COMP_CWORD]: az aktuális szó, amit épp írsz (pl. goto p<Tab> → p a szó)
+
+    A cut parancs kiszedi az összes elérhető könyvjelző nevét.
+
+    A compgen -W ebből készít egy listát, amit a shell használ tab-kiegészítéshez.
+
+🧪 Használat:
+
+    Írd be:
+
+goto <Tab>
+
+vagy
+
+    unmark <Tab>
+
+    Látod az összes elmentett könyvjelző nevét, vagy automatikusan kiegészíti, ha egyértelmű.
+
+🧼 Ne felejtsd el betölteni:
+
+Mentsd el a .bashrc-t, majd:
+
+source ~/.bashrc
+
+Ha szeretnél más saját parancsaidhoz is tab-kiegészítést, csak szólj – lehet komplexebb is (pl. fájllistából, git branchből, docker konténerekből, stb.).
+You said:
+hozzá lehet adni azt is, hogy cp-vel is működjön? pl.: cp ./file projekt1
+ChatGPT said:
+
+Igen! 🎯 Be tudjuk úgy építeni a rendszerbe, hogy a cp, mv, vagy más parancsok esetében is fel lehessen használni a mark-ok nevét, mintha könyvtárnevek lennének.
+
+Ehhez két dolog kell:
+🧩 1. Egy shell "wrapper függvény" a cp (és/vagy mv) köré
+
+Ez azt csinálja, hogy ellenőrzi, ha az argumentum egy könyvjelzőnév, és ha igen, akkor átalakítja valódi útvonallá.
+📦 .bashrc-ba ezt add hozzá:
+
+# --- cp wrapper mark támogatással ---
+cp() {
+  local args=()
+  for arg in "$@"; do
+    if [[ -f "$MARKS_FILE" && $(grep "^$arg=" "$MARKS_FILE") ]]; then
+      # ha mark, helyettesítjük az útvonallal
+      resolved=$(grep "^$arg=" "$MARKS_FILE" | cut -d= -f2-)
+      args+=("$resolved")
+    else
+      args+=("$arg")
+    fi
+  done
+  command cp "${args[@]}"
+}
+
+🛠️ Hasonlóan működhet mv is:
+
+mv() {
+  local args=()
+  for arg in "$@"; do
+    if [[ -f "$MARKS_FILE" && $(grep "^$arg=" "$MARKS_FILE") ]]; then
+      resolved=$(grep "^$arg=" "$MARKS_FILE" | cut -d= -f2-)
+      args+=("$resolved")
+    else
+      args+=("$arg")
+    fi
+  done
+  command mv "${args[@]}"
+}
+
+    command cp / command mv azt jelenti, hogy a beépített vagy eredeti cp/mv parancsot hívjuk, nem a wrapperünket (különben végtelen hívás lenne).
+
+📌 Példák használatra:
+
+mark projekt1    # => pl. ~/projektek/app
+cp valami.txt projekt1
+
+Ez ténylegesen:
+
+cp valami.txt ~/projektek/app
+
+🔒 Figyelem:
+
+    Ez nem működik akkor, ha szóköz van a könyvjelző nevében (de amúgy sem ajánlott).
+
+    Nincs tab-kiegészítés itt automatikusan – de beépíthető, ha szeretnéd.
+
+🔄 Ne felejtsd:
+
+source ~/.bashrc
+
+Ha szeretnél továbbmenni, írhatunk általános resolve_mark függvényt, amit bármely parancsnál bevethetsz, vagy teljes parancssor-parserekhez integrálhatjuk (pl. rsync, scp, tar, stb.). Szólj, ha érdekel!
+You said:
+kéne ehhez is tab kiegészítés
+ChatGPT said:
+
+Nagyon jó ötlet! ✅ Készítsünk tab-kiegészítést a cp és mv parancsokhoz, hogy felismerje a könyvjelzőket (mark-okat) is, és úgy kezelje őket, mint létező könyvtárakat.
+
+Ez működni fog akkor is, ha a cp parancs első argumentuma fájl, a második pedig egy mark név — amit kiegészítünk tabbal.
+🔧 1. Kiegészítő szkript .bashrc-be (vagy külön fájlba)
+
+# --- cp és mv kiegészítés mark-okra + fájlokra ---
+_mark_cp_mv_complete() {
+  local curr_word="${COMP_WORDS[COMP_CWORD]}"
+  local mark_names
+  mark_names=$(cut -d= -f1 "$MARKS_FILE" 2>/dev/null)
+
+  # normál fájl- vagy könyvtárnevek kiegészítése
+  local file_completions
+  file_completions=$(compgen -f -- "$curr_word")
+
+  COMPREPLY=( $(compgen -W "$mark_names $file_completions" -- "$curr_word") )
+}
+
+complete -F _mark_cp_mv_complete cp
+complete -F _mark_cp_mv_complete mv
+
+🧪 Mit tud ez?
+
+    Ha elkezdesz írni egy mark nevét:
+
+cp file.txt pro<Tab>  →  projekt1
+
+Ha fájl- vagy könyvtárnevet kezdesz írni, azt is kiegészíti:
+
+    cp ./fi<Tab>  →  ./file.txt
+
+Mindkettőt kombinálja! 🎉
+💾 Ne felejtsd:
+
+source ~/.bashrc
+
+🔍 Technikai háttér röviden:
+
+    compgen -f → fájl/könyvtár nevek
+
+    cut -d= -f1 → csak a mark neveket veszi ki a könyvjelző fájlból
+
+    compgen -W "val1 val2 val3" → ezekből a szavakból készít kiegészítést
+
+Ha még univerzálisabb rendszert szeretnél (bármilyen parancsban felismerje a mark-okat, pl. rsync, scp, stb.), azt is lehet. Szólj, ha ilyen szintre lépnél! 💡
