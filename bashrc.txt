@@ -27,6 +27,18 @@
 
 test -s ~/.alias && . ~/.alias || true
 
+
+### SAJAT PARANCSOK
+
+sabas() {
+	cp ~/.bashrc /home/angyal/dat/linux/linux-configs/bashrc.txt
+	cd /home/angyal/dat/linux/linux-configs	
+	git add .
+	git commit --allow-empty-message -m ''
+	git push
+	cd -
+}
+	
 alias rider="~/opt/JetBrains\ Rider-2024\.3\.5/bin/rider.sh"
 alias l1="ls -1" 
 alias lt="ls -1t"
@@ -43,9 +55,16 @@ mdc() { mkdir -p "$1" && cd -P "$1"; }
 
 ## MARK ELMENTI AZ AKTUALIS HELYET, JUMP VISSZAUGRIK
 mark() {
-  echo "cd $(pwd)" > ~/.lastdir
+	echo "cd $(pwd)" > ~/.lastdir
 }
 jump() {
-  source ~/.lastdir
+	source ~/.lastdir
 }
 alias rmmark="rm -f ~/.lastdir"
+
+### SSH-AGENT ÉS SSH KULCS BETOLTESE
+# Ha nincs beállítva SSH_AUTH_SOCK, indíts új agentet
+#if [ -z "$SSH_AUTH_SOCK" ]; then
+#    eval "$(ssh-agent -s)" > /dev/null
+#    ssh-add ~/.ssh/id_rsa 2>/dev/null
+#fi
