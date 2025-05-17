@@ -30,7 +30,8 @@ test -s ~/.alias && . ~/.alias || true
 
 ### SAJAT PARANCSOK
 
-sabas() {
+alias sabash='cp ~/.bashrc /home/angyal/dat/linux/linux-configs/bashrc.txt'
+sebash() {
 	cp ~/.bashrc /home/angyal/dat/linux/linux-configs/bashrc.txt
 	cd /home/angyal/dat/linux/linux-configs	
 	git add .
@@ -49,6 +50,8 @@ alias ....="cd ../../../.."
 alias pwdcp="pwd | tr -d '\n' | xclip -selection clipboard"
 
 # MAPPA KEZELESEK
+alias cpy='cd ~/dat/prog/python'
+alias cpr='cd ~/dat/prog'
 alias md="mkdir -p $*"
 cl() { cd "$1" && ls; } 
 mdc() { mkdir -p "$1" && cd -P "$1"; } 
@@ -63,6 +66,10 @@ jump() {
 alias rmmark="rm -f ~/.lastdir"
 
 ### SSH-AGENT ÉS SSH KULCS BETOLTESE
+# I. Megoldas
+# alias loadkey='eval $(ssh-agent) && ssh-add'
+
+# II. Megoldas
 # Ha nincs beállítva SSH_AUTH_SOCK, indíts új agentet
 #if [ -z "$SSH_AUTH_SOCK" ]; then
 #    eval "$(ssh-agent -s)" > /dev/null
