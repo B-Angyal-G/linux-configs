@@ -56,6 +56,13 @@ alias md="mkdir -p $*"
 cl() { cd "$1" && ls; } 
 mdc() { mkdir -p "$1" && cd -P "$1"; } 
 
+# GIT
+alias ga='git add .'
+alias gc='git commit --allow-empty-message -m '''
+alias gcm='git commit -m '$1''
+alias gp='git push'
+
+
 ## MARK ELMENTI AZ AKTUALIS HELYET, JUMP VISSZAUGRIK
 mark() {
 	echo "cd $(pwd)" > ~/.lastdir
