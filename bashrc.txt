@@ -29,19 +29,35 @@ test -s ~/.alias && . ~/.alias || true
 
 
 ### SAJAT PARANCSOK
-
+# BASH FILE KEZELESE
+alias ebash='vim ~/.bashrc'
 alias sabash='cp ~/.bashrc /home/angyal/dat/linux/linux-configs/bashrc.txt'
-sebash() {
+alias evim='vim ~/.vimrc'
+gitbash() {
 	cp ~/.bashrc /home/angyal/dat/linux/linux-configs/bashrc.txt
+	cp ~/.vimrc /home/angyal/dat/linux/linux-configs/vimrc.txt
 	cd /home/angyal/dat/linux/linux-configs	
 	git add .
 	git commit --allow-empty-message -m ''
 	git push
 	cd -
 }
+alias lbash='source ~/.bashrc'
 	
+# PROGRAMOZASHOZ
 alias rider="~/opt/JetBrains\ Rider-2024\.3\.5/bin/rider.sh"
+pyc() {
+	clear
+	python3 $1
+}
+py() {
+	python3 $1
+}
+
+# LISTAZASOK
 alias l1="ls -1" 
+alias la="ls -a -1" 
+alias lla="ls -1 -a -l" 
 alias lt="ls -1t"
 alias c="clear"
 alias ....="cd ../../../.."
@@ -51,14 +67,16 @@ alias pwdcp="pwd | tr -d '\n' | xclip -selection clipboard"
 
 # MAPPA KEZELESEK
 alias cpy='cd ~/dat/prog/python'
-alias cpr='cd ~/dat/prog'
+alias cdp='cd ~/dat/prog'
 alias md="mkdir -p $*"
 cl() { cd "$1" && ls; } 
 mdc() { mkdir -p "$1" && cd -P "$1"; } 
 
+alias rr='ranger'
+
 # GIT
 alias ga='git add .'
-alias gc='git commit --allow-empty-message -m '''
+alias gc='git commit --allow-empty-message -m ""'
 alias gcm='git commit -m '$1''
 alias gp='git push'
 
