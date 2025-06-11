@@ -32,6 +32,7 @@ test -s ~/.alias && . ~/.alias || true
 # BASH FILE KEZELESE
 alias ebash='vim ~/.bashrc'
 alias sabash='cp ~/.bashrc /home/angyal/dat/linux/linux-configs/bashrc.txt'
+alias savim='cp ~/.bashrc /home/angyal/dat/linux/linux-configs/vimrc.txt'
 alias evim='vim ~/.vimrc'
 gitbash() {
 	cp ~/.bashrc /home/angyal/dat/linux/linux-configs/bashrc.txt
@@ -58,7 +59,9 @@ py() {
 alias l1="ls -1" 
 alias la="ls -a -1" 
 alias lla="ls -1 -a -l" 
+alias lal='ls -1al'
 alias lt="ls -1t"
+alias lat='ls -1lat'
 alias c="clear"
 alias ....="cd ../../../.."
 
@@ -68,7 +71,7 @@ alias pwdcp="pwd | tr -d '\n' | xclip -selection clipboard"
 # MAPPA KEZELESEK
 alias cpy='cd ~/dat/prog/python'
 alias cdp='cd ~/dat/prog'
-alias md="mkdir -p $*"
+alias md="mkdir -p $@"
 cl() { cd "$1" && ls; } 
 mdc() { mkdir -p "$1" && cd -P "$1"; } 
 
@@ -79,7 +82,7 @@ alias ga='git add .'
 alias gc='git commit --allow-empty-message -m ""'
 alias gcm='git commit -m '$1''
 alias gp='git push'
-
+alias gr='git rm --cached '$@''
 
 ## MARK ELMENTI AZ AKTUALIS HELYET, JUMP VISSZAUGRIK
 mark() {
