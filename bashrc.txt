@@ -29,6 +29,11 @@ test -s ~/.alias && . ~/.alias || true
 
 
 ### SAJAT PARANCSOK
+# RENDSZER
+export PATH="$HOME/.local/bin:$PATH"
+alias sd='sudo shutdown -h now'
+alias sr='sudo shutdown -r now'
+
 # BASH FILE KEZELESE
 alias ebash='vim ~/.bashrc'
 alias sabash='cp ~/.bashrc /home/angyal/dat/linux/linux-configs/bashrc.txt'
@@ -57,11 +62,14 @@ py() {
 
 # LISTAZASOK
 alias l1="ls -1" 
-alias la="ls -a -1" 
-alias lla="ls -1 -a -l" 
-alias lal='ls -1al'
+alias la="ls -a1" 
+alias ll='ls -l1h'
+alias cll='clear && ls -l1h'
+alias llt='ls -l1ht'
+alias lla="ls -a1lh" 
+alias lal='ls -1alh'
 alias lt="ls -1t"
-alias lat='ls -1lat'
+alias lat='ls -1lath'
 alias c="clear"
 alias ....="cd ../../../.."
 
@@ -71,8 +79,11 @@ alias pwdcp="pwd | tr -d '\n' | xclip -selection clipboard"
 # MAPPA KEZELESEK
 alias cpy='cd ~/dat/prog/python'
 alias cdp='cd ~/dat/prog'
+alias cdd='cd ~/hdd/down'
 alias md="mkdir -p $@"
-cl() { cd "$1" && ls; } 
+cl() { cd "$1" && ls -1 -t; } 
+clc() { cd "$1" && clear && ls -1 -t;} 
+cdc() { cd "$1" && clear; } 
 mdc() { mkdir -p "$1" && cd -P "$1"; } 
 
 alias rr='ranger'
@@ -82,7 +93,14 @@ alias ga='git add .'
 alias gc='git commit --allow-empty-message -m ""'
 alias gcm='git commit -m '$1''
 alias gp='git push'
+alias gpu='git pull'
 alias gr='git rm --cached '$@''
+
+# LS COLORS BEALLITASAI (~/.dircolors)
+if [ -x /usr/bin/dircolors ]; then
+    test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
+fi
+
 
 ## MARK ELMENTI AZ AKTUALIS HELYET, JUMP VISSZAUGRIK
 mark() {

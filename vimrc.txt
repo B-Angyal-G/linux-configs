@@ -1,103 +1,65 @@
-# Sample .bashrc for SuSE Linux
-# Copyright (c) SuSE GmbH Nuernberg
+" An example for a vimrc file.
+"
+" Maintainer:	The Vim Project <https://github.com/vim/vim>
+" Last Change:	2023 Aug 10
+" Former Maintainer:	Bram Moolenaar <Bram@vim.org>
+"
+" To use it, copy it to
+"	       for Unix:  ~/.vimrc
+"	      for Amiga:  s:.vimrc
+"	 for MS-Windows:  $VIM\_vimrc
+"	      for Haiku:  ~/config/settings/vim/vimrc
+"	    for OpenVMS:  sys$login:.vimrc
 
-# There are 3 different types of shells in bash: the login shell, normal shell
-# and interactive shell. Login shells read ~/.profile and interactive shells
-# read ~/.bashrc; in our setup, /etc/profile sources ~/.bashrc - thus all
-# settings made here will also take effect in a login shell.
-#
-# NOTE: It is recommended to make language settings in ~/.profile rather than
-# here, since multilingual X sessions would not work properly if LANG is over-
-# ridden in every subshell.
+" When started as "evim", evim.vim will already have done these settings, bail
+" out.
+if v:progname =~? "evim"
+  finish
+endif
 
-# Some applications read the EDITOR variable to determine your favourite text
-# editor. So uncomment the line below and enter the editor of your choice :-)
-#export EDITOR=/usr/bin/vim
-#export EDITOR=/usr/bin/mcedit
+" Get the defaults that most users want.
+source $VIMRUNTIME/defaults.vim
 
-# For some news readers it makes sense to specify the NEWSSERVER variable here
-#export NEWSSERVER=your.news.server
+if has("vms")
+  set nobackup		" do not keep a backup file, use versions instead
+else
+  set backup		" keep a backup file (restore to previous version)
+  if has('persistent_undo')
+    set undofile	" keep an undo file (undo changes after closing)
+  endif
+endif
 
-# If you want to use a Palm device with Linux, uncomment the two lines below.
-# For some (older) Palm Pilots, you might need to set a lower baud rate
-# e.g. 57600 or 38400; lowest is 9600 (very slow!)
-#
-#export PILOTPORT=/dev/pilot
-#export PILOTRATE=115200
+if &t_Co > 2 || has("gui_running")
+  " Switch on highlighting the last used search pattern.
+  set hlsearch
+endif
 
-test -s ~/.alias && . ~/.alias || true
+" Put these in an autocmd group, so that we can delete them easily.
+augroup vimrcEx
+  au!
 
+  " For all text files set 'textwidth' to 78 characters.
+  autocmd FileType text setlocal textwidth=78
+augroup END
 
-### SAJAT PARANCSOK
-# BASH FILE KEZELESE
-alias ebash='vim ~/.bashrc'
-alias sabash='cp ~/.bashrc /home/angyal/dat/linux/linux-configs/bashrc.txt'
-alias savim='cp ~/.bashrc /home/angyal/dat/linux/linux-configs/vimrc.txt'
-alias evim='vim ~/.vimrc'
-gitbash() {
-	cp ~/.bashrc /home/angyal/dat/linux/linux-configs/bashrc.txt
-	cp ~/.vimrc /home/angyal/dat/linux/linux-configs/vimrc.txt
-	cd /home/angyal/dat/linux/linux-configs	
-	git add .
-	git commit --allow-empty-message -m ''
-	git push
-	cd -
-}
-alias lbash='source ~/.bashrc'
-	
-# PROGRAMOZASHOZ
-alias rider="~/opt/JetBrains\ Rider-2024\.3\.5/bin/rider.sh"
-pyc() {
-	clear
-	python3 $1
-}
-py() {
-	python3 $1
-}
-
-# LISTAZASOK
-alias l1="ls -1" 
-alias la="ls -a -1" 
-alias lla="ls -1 -a -l" 
-alias lt="ls -1t"
-alias c="clear"
-alias ....="cd ../../../.."
-
-# AKTUALIS KONYVTAR UTJANAK MASOLASA CLIPBOARDRA (ENTER NELKUL A VEGEN)
-alias pwdcp="pwd | tr -d '\n' | xclip -selection clipboard"
-
-# MAPPA KEZELESEK
-alias cpy='cd ~/dat/prog/python'
-alias cdp='cd ~/dat/prog'
-alias md="mkdir -p $*"
-cl() { cd "$1" && ls; } 
-mdc() { mkdir -p "$1" && cd -P "$1"; } 
-
-alias rr='ranger'
-
-# GIT
-alias ga='git add .'
-alias gc='git commit --allow-empty-message -m ""'
-alias gcm='git commit -m '$1''
-alias gp='git push'
+" Add optional packages.
+"
+" The matchit plugin makes the % command work better, but it is not backwards
+" compatible.
+" The ! means the package won't be loaded right away but when plugins are
+" loaded during initialization.
+if has('syntax') && has('eval')
+  packadd! matchit
+endif
 
 
-## MARK ELMENTI AZ AKTUALIS HELYET, JUMP VISSZAUGRIK
-mark() {
-	echo "cd $(pwd)" > ~/.lastdir
-}
-jump() {
-	source ~/.lastdir
-}
-alias rmmark="rm -f ~/.lastdir"
+" OWN SETUPS
+"
+" Szamozas
+set number
 
-### SSH-AGENT ÉS SSH KULCS BETOLTESE
-# I. Megoldas
-# alias loadkey='eval $(ssh-agent) && ssh-add'
+" Kevesebb kesleltetes a parancsok vegrehajtasakor
+set timeoutlen=1
 
-# II. Megoldas
-# Ha nincs beállítva SSH_AUTH_SOCK, indíts új agentet
-#if [ -z "$SSH_AUTH_SOCK" ]; then
-#    eval "$(ssh-agent -s)" > /dev/null
-#    ssh-add ~/.ssh/id_rsa 2>/dev/null
-#fi
+" Korabban elkezdodo scrollozas
+set scrolloff=1
