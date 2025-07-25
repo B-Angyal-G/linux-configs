@@ -42,6 +42,7 @@ alias evim='vim ~/.vimrc'
 gitbash() {
 	cp ~/.bashrc /home/angyal/dat/linux/linux-configs/bashrc.txt
 	cp ~/.vimrc /home/angyal/dat/linux/linux-configs/vimrc.txt
+	cp ~/.dircolors /home/angyal/dat/linux/linux-configs/dircolors.txt
 	cd /home/angyal/dat/linux/linux-configs	
 	git add .
 	git commit --allow-empty-message -m ''
