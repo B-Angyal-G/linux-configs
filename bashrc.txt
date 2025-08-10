@@ -33,6 +33,7 @@ test -s ~/.alias && . ~/.alias || true
 export PATH="$HOME/.local/bin:$PATH"
 alias sd='sudo shutdown -h now'
 alias sr='sudo shutdown -r now'
+alias godot='~/dat/prog/Godot*'
 
 # BASH FILE KEZELESE
 alias ebash='vim ~/.bashrc'

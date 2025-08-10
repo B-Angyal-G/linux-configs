@@ -127,6 +127,9 @@ map <ScrollWheelDown> 2<C-E>2j
 " map-ok
 let mapleader="-"
 
+nnoremap ; ,
+nnoremap , ;
+
 nnoremap <leader>l :nohl<CR>
 nnoremap <leader>q :q<CR>
 nnoremap <leader>qq :q!<CR>
@@ -147,11 +150,22 @@ nnoremap 2<Tab> >>>>
 nnoremap 3<Tab> >>>>>>
 nnoremap 4<Tab> >>>>>>>>
 nnoremap 5<Tab> >>>>>>>>>>
-vmap <Tab> >>
-vmap 2<Tab> >>>>
-vmap 3<Tab> >>>>>>
-vmap 4<Tab> >>>>>>>>
-vmap 5<Tab> >>>>>>>>>>
+vmap <Tab> >
+"vmap 2<Tab> >>>>
+"vmap 3<Tab> >>>>>>
+"vmap 4<Tab> >>>>>>>>
+"vmap 5<Tab> >>>>>>>>>>
+
+nnoremap <S-Tab> <<
+nnoremap 2<S-Tab> <<<<
+nnoremap 3<S-Tab> <<<<<<
+nnoremap 4<S-Tab> <<<<<<<<
+nnoremap 5<S-Tab> <<<<<<<<<<
+vmap <S-Tab> <
+"vmap 2<S-Tab> <<<<
+"vmap 3<S-Tab> <<<<<<
+"vmap 4<S-Tab> <<<<<<<<
+"vmap 5<S-Tab> <<<<<<<<<<
 
 vmap <leader>c gc
 nmap <leader>c gcc
