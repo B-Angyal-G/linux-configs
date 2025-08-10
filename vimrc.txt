@@ -53,13 +53,105 @@ if has('syntax') && has('eval')
 endif
 
 
+
 " OWN SETUPS
-"
-" Szamozas
+
+" Plugin-ek: vim-plug
+call plug#begin()
+
+" Plug 'ervandew/supertab'
+Plug 'tpope/vim-commentary'
+
+call plug#end()
+
+" Tab sor
+set showtabline=1
+set tabline=%!MyTabLine()
+
+function! MyTabLine()
+  let s = ''
+  for i in range(tabpagenr('$'))
+    let tabnr = i + 1
+    let winnr = tabpagewinnr(tabnr)
+    let buflist = tabpagebuflist(tabnr)
+    let bufnr = buflist[winnr - 1]
+    let bufname = bufname(bufnr)
+
+    if bufname == ''
+      let bufname = '[No Name]'
+    else
+      let bufname = fnamemodify(bufname, ':t') 
+    endif
+
+    let modified = getbufvar(bufnr, '&modified') ? ' [+]' : ''
+
+    let label = tabnr . ':' . bufname . modified
+    if tabnr == tabpagenr()
+      let s .= '%#TabLineSel#'
+    else
+      let s .= '%#TabLine#'
+    endif
+    let s .= '%' . tabnr . 'T ' . label . ' '
+  endfor
+  let s .= '%#TabLineFill#%T'
+  return s
+endfunction
+
+" Aktív tab: világos háttér, sötét szöveg
+highlight TabLineSel ctermfg=180 ctermbg=233 cterm=underline,bold
+
+" Nem aktív tabok: sötétebb háttér, világosabb szöveg
+highlight TabLine ctermfg=blue ctermbg=233 cterm=none
+
+" Kitöltő rész (a tabok után)
+highlight TabLineFill ctermfg=0 ctermbg=0
+
+
+set nocompatible 
+set autoread
+set ttyfast
+set showcmd
+set undolevels=1000
 set number
-
-" Kevesebb kesleltetes a parancsok vegrehajtasakor
-set timeoutlen=1
-
-" Korabban elkezdodo scrollozas
+set timeoutlen=400
+set linebreak
 set scrolloff=1
+
+
+" Egerhasznalat
+set mouse=a
+map <ScrollWheelUp> 2<C-Y>2k
+map <ScrollWheelDown> 2<C-E>2j
+
+
+" map-ok
+let mapleader="-"
+
+nnoremap <leader>l :nohl<CR>
+nnoremap <leader>q :q<CR>
+nnoremap <leader>qq :q!<CR>
+nnoremap <leader>w :w<CR>
+nnoremap <leader>wq :wq<CR>
+
+" Tab kezelések
+nmap <C-t> :tabnew<CR>
+nmap <C-l> :tabn<CR>
+nmap <C-h> :tabp<CR>
+
+for i in range(1, 9)
+  execute 'nnoremap <leader>' . i . ' :tabn ' . i . '<CR>'
+endfor
+
+nnoremap <Tab> >>
+nnoremap 2<Tab> >>>>
+nnoremap 3<Tab> >>>>>>
+nnoremap 4<Tab> >>>>>>>>
+nnoremap 5<Tab> >>>>>>>>>>
+vmap <Tab> >>
+vmap 2<Tab> >>>>
+vmap 3<Tab> >>>>>>
+vmap 4<Tab> >>>>>>>>
+vmap 5<Tab> >>>>>>>>>>
+
+vmap <leader>c gc
+nmap <leader>c gcc

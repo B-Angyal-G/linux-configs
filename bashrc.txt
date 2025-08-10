@@ -36,9 +36,9 @@ alias sr='sudo shutdown -r now'
 
 # BASH FILE KEZELESE
 alias ebash='vim ~/.bashrc'
+alias evim='vim ~/.vimrc'
 alias sabash='cp ~/.bashrc /home/angyal/dat/linux/linux-configs/bashrc.txt'
 alias savim='cp ~/.bashrc /home/angyal/dat/linux/linux-configs/vimrc.txt'
-alias evim='vim ~/.vimrc'
 gitbash() {
 	cp ~/.bashrc /home/angyal/dat/linux/linux-configs/bashrc.txt
 	cp ~/.vimrc /home/angyal/dat/linux/linux-configs/vimrc.txt
