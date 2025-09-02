@@ -127,8 +127,11 @@ map <ScrollWheelDown> 2<C-E>2j
 " map-ok
 let mapleader="-"
 
+" vim alapbeállításainak átszerkesztése
 nnoremap ; ,
 nnoremap , ;
+nnoremap ^ 0
+nnoremap 0 ^
 
 nnoremap <leader>l :nohl<CR>
 nnoremap <leader>q :q<CR>

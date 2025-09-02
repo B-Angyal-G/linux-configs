@@ -31,15 +31,16 @@ test -s ~/.alias && . ~/.alias || true
 ### SAJAT PARANCSOK
 # RENDSZER
 export PATH="$HOME/.local/bin:$PATH"
-alias sd='sudo shutdown -h now'
-alias sr='sudo shutdown -r now'
+alias sd='sleep 5 && sudo shutdown -h now'
+alias sr='sleep 5 && sudo shutdown -r now'
+alias up='sudo zypper ref; sudo zypper patch; sudo zypper up'
 alias godot='~/dat/prog/Godot*'
 
 # BASH FILE KEZELESE
 alias ebash='vim ~/.bashrc'
 alias evim='vim ~/.vimrc'
 alias sabash='cp ~/.bashrc /home/angyal/dat/linux/linux-configs/bashrc.txt'
-alias savim='cp ~/.bashrc /home/angyal/dat/linux/linux-configs/vimrc.txt'
+alias savim='cp ~/.vimrc /home/angyal/dat/linux/linux-configs/vimrc.txt'
 gitbash() {
 	cp ~/.bashrc /home/angyal/dat/linux/linux-configs/bashrc.txt
 	cp ~/.vimrc /home/angyal/dat/linux/linux-configs/vimrc.txt
@@ -95,7 +96,7 @@ alias ga='git add .'
 alias gc='git commit --allow-empty-message -m ""'
 alias gcm='git commit -m '$1''
 alias gp='git push'
-alias gpu='git pull'
+gip() { ga && gc && gp; }
 alias gr='git rm --cached '$@''
 
 # LS COLORS BEALLITASAI (~/.dircolors)
