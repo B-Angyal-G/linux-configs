@@ -183,6 +183,13 @@ EXEC 00;32
 # xls
 .xlsx 00;32
 
+# doc
+.doc 00;36
+.docx 00;36
+.odt 00;36
+.ott 00;36
+.rtf 00;36
+
 # tex
 .tex 00;35
 

@@ -31,8 +31,9 @@ test -s ~/.alias && . ~/.alias || true
 ### SAJAT PARANCSOK
 # RENDSZER
 export PATH="$HOME/.local/bin:$PATH"
-alias sd='sleep 5 && sudo shutdown -h now'
-alias sr='sleep 5 && sudo shutdown -r now'
+alias sd='sleep 4 && killall brave && sudo shutdown -h now'
+alias sr='sleep 4 && killall brave && sudo shutdown -r now'
+alias sl='sleep 4 && killall brave && systemctl suspend'
 alias up='sudo zypper ref; sudo zypper patch; sudo zypper up'
 alias godot='~/dat/prog/Godot*'
 
@@ -86,12 +87,17 @@ alias cdd='cd ~/hdd/down'
 alias md="mkdir -p $@"
 cl() { cd "$1" && ls -1 -t; } 
 clc() { cd "$1" && clear && ls -1 -t;} 
-cdc() { cd "$1" && clear; } 
+cdc() { if [ -z "$1" ]; then
+	    cd ~ && clear
+	else
+	    cd "$1" && clear
+	fi }
 mdc() { mkdir -p "$1" && cd -P "$1"; } 
 
-alias rr='ranger'
+alias rr='. ranger'
 
 # GIT
+alias gi='git init && printf "*~\n*#\n*.swp\n\n*test*\n__pycache__/\n" > .gitignore' 
 alias ga='git add .'
 alias gc='git commit --allow-empty-message -m ""'
 alias gcm='git commit -m '$1''

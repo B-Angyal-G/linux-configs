@@ -123,6 +123,8 @@ set mouse=a
 map <ScrollWheelUp> 2<C-Y>2k
 map <ScrollWheelDown> 2<C-E>2j
 
+" Ctrl + C vágólapra
+vnoremap <C-c> :w !xclip -selection clipboard <CR><CR>
 
 " map-ok
 let mapleader="-"
