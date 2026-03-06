@@ -31,11 +31,12 @@ test -s ~/.alias && . ~/.alias || true
 ### SAJAT PARANCSOK
 # RENDSZER
 export PATH="$HOME/.local/bin:$PATH"
-alias sd='sleep 4 && killall brave && sudo shutdown -h now'
-alias sr='sleep 4 && killall brave && sudo shutdown -r now'
-alias sl='sleep 4 && killall brave && systemctl suspend'
+alias sd='sleep 4; killall -q brave; sudo shutdown -h now'
+alias sr='sleep 4; killall -q brave; sudo shutdown -r now'
+alias sl='sleep 4; killall -q brave; systemctl suspend'
 alias up='sudo zypper ref; sudo zypper patch; sudo zypper up'
 alias godot='~/dat/prog/Godot*'
+
 
 # BASH FILE KEZELESE
 alias ebash='vim ~/.bashrc'
@@ -54,6 +55,7 @@ gitbash() {
 }
 alias lbash='source ~/.bashrc'
 	
+
 # PROGRAMOZASHOZ
 alias rider="~/opt/JetBrains\ Rider-2024\.3\.5/bin/rider.sh"
 pyc() {
@@ -63,6 +65,57 @@ pyc() {
 py() {
 	python3 $1
 }
+
+# C++
+_gpp_engine() {
+    local mode="$1"
+    shift
+
+    if [ "$#" -lt 1 ]; then
+        # echo "Hiba: Adj meg legalább egy .cpp fájlt!"
+        return 1
+    fi
+
+    # Képernyőtörlés, ha 'c' van a módban
+    [[ "$mode" == *c* ]] && clear
+
+    local input="$1"
+    local output
+
+    # Ha van második paraméter, az az exe neve, egyébként a kiterjesztés nélküli fájlnév
+    if [ -n "$2" ]; then
+        output="$2"
+    else
+        output="${input%.*}"
+    fi
+
+    echo ">>> Compile: $input -> $output"
+    # g++ -std=c++17 -Wall -Wextra -O2 "$input" -o "$output"
+    g++ -std=c++17 -O2 "$input" -o "$output"
+
+    # Ha a fordítás sikeres ($? == 0)
+    if [ $? -eq 0 ]; then
+        # Futtatás, ha 'r' van a módban
+        if [[ "$mode" == *r* ]]; then
+            echo ">>> Run: $output"
+            ./"$output"
+        fi
+    else
+        # echo ">>> Fordítás sikertelen!"
+        return 1
+    fi
+
+	# Sortörés
+	echo""
+}
+
+# Használat
+gpp()   { _gpp_engine "n"  "$@"; }
+gppc()  { _gpp_engine "c"  "$@"; }
+gppr()  { _gpp_engine "r"  "$@"; }
+gppcr() { _gpp_engine "cr" "$@"; }
+gpprc() { _gpp_engine "cr" "$@"; }
+
 
 # LISTAZASOK
 alias l1="ls -1" 
@@ -77,13 +130,16 @@ alias lat='ls -1lath'
 alias c="clear"
 alias ....="cd ../../../.."
 
+
 # AKTUALIS KONYVTAR UTJANAK MASOLASA CLIPBOARDRA (ENTER NELKUL A VEGEN)
 alias pwdcp="pwd | tr -d '\n' | xclip -selection clipboard"
+
 
 # MAPPA KEZELESEK
 alias cpy='cd ~/dat/prog/python'
 alias cdp='cd ~/dat/prog'
 alias cdd='cd ~/hdd/down'
+alias cpa='cd /home/angyal/dat/pannon_egyetem'
 alias md="mkdir -p $@"
 cl() { cd "$1" && ls -1 -t; } 
 clc() { cd "$1" && clear && ls -1 -t;} 
@@ -96,14 +152,17 @@ mdc() { mkdir -p "$1" && cd -P "$1"; }
 
 alias rr='. ranger'
 
+
 # GIT
-alias gi='git init && printf "*~\n*#\n*.swp\n\n*test*\n__pycache__/\n" > .gitignore' 
+alias gi='git init && printf "*~\n*#\n*.swp\n\n*test*\n__pycache__/\n\n.gitignore\n" > .gitignore' 
 alias ga='git add .'
 alias gc='git commit --allow-empty-message -m ""'
 alias gcm='git commit -m '$1''
 alias gp='git push'
 gip() { ga && gc && gp; }
 alias gr='git rm --cached '$@''
+
+
 
 # LS COLORS BEALLITASAI (~/.dircolors)
 if [ -x /usr/bin/dircolors ]; then
@@ -130,3 +189,8 @@ alias rmmark="rm -f ~/.lastdir"
 #    eval "$(ssh-agent -s)" > /dev/null
 #    ssh-add ~/.ssh/id_rsa 2>/dev/null
 #fi
+
+
+# .NET beállítások
+export PATH=$HOME/.dotnet:$HOME/.dotnet/tools:$PATH
+export DOTNET_ROOT=$HOME/.dotnet

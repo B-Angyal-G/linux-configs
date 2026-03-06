@@ -64,6 +64,11 @@ Plug 'tpope/vim-commentary'
 
 call plug#end()
 
+" File specifikus beállítások
+" C++
+autocmd FileType cpp inoremap { {<CR>}<Esc>O
+
+
 " Tab sor
 set showtabline=1
 set tabline=%!MyTabLine()
@@ -123,13 +128,17 @@ set mouse=a
 map <ScrollWheelUp> 2<C-Y>2k
 map <ScrollWheelDown> 2<C-E>2j
 
+
 " Ctrl + C vágólapra
 vnoremap <C-c> :w !xclip -selection clipboard <CR><CR>
+
 
 " map-ok
 let mapleader="-"
 
+
 " vim alapbeállításainak átszerkesztése
+vnoremap y y'>
 nnoremap ; ,
 nnoremap , ;
 nnoremap ^ 0
@@ -141,6 +150,13 @@ nnoremap <leader>qq :q!<CR>
 nnoremap <leader>w :w<CR>
 nnoremap <leader>wq :wq<CR>
 
+" Folding
+nnoremap <space> za
+nnoremap <leader>a zA
+set foldmethod=indent
+highlight Folded ctermbg=NONE guibg=NONE ctermfg=Grey guifg=Gray
+
+
 " Tab kezelések
 nmap <C-t> :tabnew<CR>
 nmap <C-l> :tabn<CR>
@@ -150,12 +166,17 @@ for i in range(1, 9)
   execute 'nnoremap <leader>' . i . ' :tabn ' . i . '<CR>'
 endfor
 
+
+" Tabulátor
+set tabstop=4
+set shiftwidth=4
+
 nnoremap <Tab> >>
 nnoremap 2<Tab> >>>>
 nnoremap 3<Tab> >>>>>>
 nnoremap 4<Tab> >>>>>>>>
 nnoremap 5<Tab> >>>>>>>>>>
-vmap <Tab> >
+vmap <Tab> >gv
 "vmap 2<Tab> >>>>
 "vmap 3<Tab> >>>>>>
 "vmap 4<Tab> >>>>>>>>
@@ -166,7 +187,7 @@ nnoremap 2<S-Tab> <<<<
 nnoremap 3<S-Tab> <<<<<<
 nnoremap 4<S-Tab> <<<<<<<<
 nnoremap 5<S-Tab> <<<<<<<<<<
-vmap <S-Tab> <
+vmap <S-Tab> <gv
 "vmap 2<S-Tab> <<<<
 "vmap 3<S-Tab> <<<<<<
 "vmap 4<S-Tab> <<<<<<<<
