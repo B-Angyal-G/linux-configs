@@ -35,7 +35,7 @@ alias sd='sleep 4; killall -q brave; sudo shutdown -h now'
 alias sr='sleep 4; killall -q brave; sudo shutdown -r now'
 alias sl='sleep 4; killall -q brave; systemctl suspend'
 alias up='sudo zypper ref; sudo zypper patch; sudo zypper up'
-alias godot='~/dat/prog/Godot*'
+
 
 
 # BASH FILE KEZELESE
@@ -54,17 +54,35 @@ gitbash() {
 	cd -
 }
 alias lbash='source ~/.bashrc'
+
+# Script file letrehozasa
+scr() {
+	filename="$1"
+	
+	if [[ -z "$filename" ]]; then
+		echo "Invalid file name. Did nothing."
+		return 1
+	fi
+
+	if [[ "$filename" != *.sh ]]; then
+		filename="${filename}.sh"
+	fi
+
+	if [[ ! -f "$filename" ]]; then
+		install -m 755 /dev/null "$filename" &&
+		echo '#!/bin/bash' > "$filename" &&
+		echo -e "\n" >> "$filename" &&
+		vim +3 "$filename"
+	fi
+}
 	
 
+
 # PROGRAMOZASHOZ
-alias rider="~/opt/JetBrains\ Rider-2024\.3\.5/bin/rider.sh"
-pyc() {
-	clear
-	python3 $1
-}
-py() {
-	python3 $1
-}
+alias rider="~/opt/JetBrains\ Rider-2024\.3\.5/bin/rider.sh &"
+alias godot='~/dat/prog/Godot*'
+pyc() { clear && python3 $1 }
+py() { python3 $1 }
 
 # C++
 _gpp_engine() {
@@ -117,6 +135,7 @@ gppcr() { _gpp_engine "cr" "$@"; }
 gpprc() { _gpp_engine "cr" "$@"; }
 
 
+
 # LISTAZASOK
 alias l1="ls -1" 
 alias la="ls -a1" 
@@ -129,15 +148,17 @@ alias lt="ls -1t"
 alias lat='ls -1lath'
 alias c="clear"
 alias ....="cd ../../../.."
+# Merevlemezek foglaltsaga
+alias dfp='lsblk -o NAME,FSSIZE,FSUSED,FSAVAIL,FSUSE%,MOUNTPOINTSA'
+# Szuletesnapok kiiratasa
+alias birthday='/home/angyal/dat/linux/scripts/disp_birthdays.sh'
 
-
-# AKTUALIS KONYVTAR UTJANAK MASOLASA CLIPBOARDRA (ENTER NELKUL A VEGEN)
-alias pwdcp="pwd | tr -d '\n' | xclip -selection clipboard"
 
 
 # MAPPA KEZELESEK
 alias cpy='cd ~/dat/prog/python'
 alias cdp='cd ~/dat/prog'
+alias cdh='cd ~/hdd'
 alias cdd='cd ~/hdd/down'
 alias cpa='cd /home/angyal/dat/pannon_egyetem'
 alias md="mkdir -p $@"
@@ -150,7 +171,18 @@ cdc() { if [ -z "$1" ]; then
 	fi }
 mdc() { mkdir -p "$1" && cd -P "$1"; } 
 
+# Aktualis konyvtar (vagy megadott file) utjanak masolasa clipboardra (enter nelkul a vegen)
+pwdcp() {
+	path=$(pwd | tr -d '\n')
+	if [[ -e $1 ]]; then
+		path="${path}/$1"
+	fi
+
+	echo -n "$path" | xclip -selection clipboard
+}
+
 alias rr='. ranger'
+
 
 
 # GIT
