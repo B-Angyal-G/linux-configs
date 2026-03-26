@@ -81,8 +81,8 @@ scr() {
 # PROGRAMOZASHOZ
 alias rider="~/opt/JetBrains\ Rider-2024\.3\.5/bin/rider.sh &"
 alias godot='~/dat/prog/Godot*'
-pyc() { clear && python3 "$1"; }
-py() { python3 "$1"; }
+pyc() { clear && python3 $1 }
+py() { python3 $1 }
 
 # C++
 _gpp_engine() {
@@ -124,7 +124,7 @@ _gpp_engine() {
     fi
 
 	# Sortörés
-	echo ""
+	echo""
 }
 
 # Használat
@@ -152,7 +152,6 @@ alias ....="cd ../../../.."
 alias dfp='lsblk -o NAME,FSSIZE,FSUSED,FSAVAIL,FSUSE%,MOUNTPOINTS'
 # Szuletesnapok kiiratasa
 alias birthday='/home/angyal/dat/linux/scripts/disp_birthdays.sh'
-alias nameday='/home/angyal/dat/linux/scripts/disp_namedays.sh'
 
 
 
@@ -201,8 +200,6 @@ gr() { git rm --cached "$@"; }
 # LS COLORS BEALLITASAI (~/.dircolors)
 if [ -x /usr/bin/dircolors ]; then
     test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
-
-	alias ls='ls --color=auto'
 fi
 
 
@@ -230,3 +227,4 @@ alias rmmark="rm -f ~/.lastdir"
 # .NET beállítások
 export PATH=$HOME/.dotnet:$HOME/.dotnet/tools:$PATH
 export DOTNET_ROOT=$HOME/.dotnet
+
