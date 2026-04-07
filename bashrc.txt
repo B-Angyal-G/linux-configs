@@ -28,26 +28,35 @@
 test -s ~/.alias && . ~/.alias || true
 
 
-### SAJAT PARANCSOK
-# RENDSZER
+
+
+
+#####################################
+#          SAJAT PARANCSOK          #
+#####################################
+
+# <===== RENDSZER =====>
 export PATH="$HOME/.local/bin:$PATH"
-alias sd='sleep 4; killall -q brave; sudo shutdown -h now'
-alias sr='sleep 4; killall -q brave; sudo shutdown -r now'
-alias sl='sleep 4; killall -q brave; systemctl suspend'
+alias sd='sleep 4; killall -q brave 2>/dev/null; sudo shutdown -h now'
+alias sr='sleep 4; killall -q brave 2>/dev/null; sudo shutdown -r now'
+alias sl='sleep 4; killall -q brave 2>/dev/null; systemctl suspend'
 alias up='sudo zypper ref; sudo zypper patch; sudo zypper up'
 
 
 
-# BASH FILE KEZELESE
+
+
+# <===== BASH FILE KEZELESEK =====>
 alias ebash='vim ~/.bashrc'
 alias evim='vim ~/.vimrc'
-alias sabash='cp ~/.bashrc /home/angyal/dat/linux/linux-configs/bashrc.txt'
-alias savim='cp ~/.vimrc /home/angyal/dat/linux/linux-configs/vimrc.txt'
+alias sabash='cp ~/.bashrc ~/dat/linux/linux-configs/bashrc.txt'
+alias lobash='cp ~/dat/linux/linux-configs/bashrc.txt ~/.bashrc'
+alias savim='cp ~/.vimrc ~/dat/linux/linux-configs/vimrc.txt'
 gitbash() {
-	cp ~/.bashrc /home/angyal/dat/linux/linux-configs/bashrc.txt
-	cp ~/.vimrc /home/angyal/dat/linux/linux-configs/vimrc.txt
-	cp ~/.dircolors /home/angyal/dat/linux/linux-configs/dircolors.txt
-	cd /home/angyal/dat/linux/linux-configs	
+	cp ~/.bashrc /dat/linux/linux-configs/bashrc.txt
+	cp ~/.vimrc /dat/linux/linux-configs/vimrc.txt
+	cp ~/.dircolors /dat/linux/linux-configs/dircolors.txt
+	cd ~/dat/linux/linux-configs	|| return
 	git add .
 	git commit --allow-empty-message -m ''
 	git push
@@ -62,7 +71,7 @@ scr() {
 	if [[ -z "$filename" ]]; then
 		echo "Invalid file name. Did nothing."
 		return 1
-	fi
+		fi
 
 	if [[ "$filename" != *.sh ]]; then
 		filename="${filename}.sh"
@@ -78,9 +87,17 @@ scr() {
 	
 
 
-# PROGRAMOZASHOZ
-alias rider="~/opt/JetBrains\ Rider-2024\.3\.5/bin/rider.sh &"
-alias godot='~/dat/prog/Godot*'
+
+# <===== PROGRAMOK =====>
+alias rider='~/opt/JetBrains\ Rider*/bin/rider.sh &'
+alias androids='~/opt/android-studio/bin/studio.sh &'
+alias godot='~/opt/Godot* &'
+alias rr='. ranger'
+
+
+
+# <===== PROGRAMOZASHOZ =====>
+# Python
 pyc() { clear && python3 "$1"; }
 py() { python3 "$1"; }
 
@@ -89,7 +106,7 @@ _gpp_engine() {
     local mode="$1"
     shift
 
-    if [ "$#" -lt 1 ]; then
+	if [ "$#" -lt 1 ]; then
         # echo "Hiba: Adj meg legalább egy .cpp fájlt!"
         return 1
     fi
@@ -136,7 +153,9 @@ gpprc() { _gpp_engine "cr" "$@"; }
 
 
 
-# LISTAZASOK
+
+
+# <===== LISTAZASOK =====>
 alias l1="ls -1" 
 alias la="ls -a1" 
 alias ll='ls -l1h'
@@ -148,20 +167,25 @@ alias lt="ls -1t"
 alias lat='ls -1lath'
 alias c="clear"
 alias ....="cd ../../../.."
+
 # Merevlemezek foglaltsaga
 alias dfp='lsblk -o NAME,FSSIZE,FSUSED,FSAVAIL,FSUSE%,MOUNTPOINTS'
+
 # Szuletesnapok kiiratasa
-alias birthday='/home/angyal/dat/linux/scripts/disp_birthdays.sh'
-alias nameday='/home/angyal/dat/linux/scripts/disp_namedays.sh'
+alias birthday='~/dat/linux/scripts/disp_birthdays.sh'
+alias nameday='~/dat/linux/scripts/disp_namedays.sh'
 
 
 
-# MAPPA KEZELESEK
+
+
+# <===== MAPPA KEZELESEK =====>
 alias cpy='cd ~/dat/prog/python'
 alias cdp='cd ~/dat/prog'
 alias cdh='cd ~/hdd'
 alias cdd='cd ~/hdd/down'
-alias cpa='cd /home/angyal/dat/pannon_egyetem'
+alias cpa='cd ~/dat/pannon_egyetem'
+unalias md 2>/dev/null
 md() { mkdir -p "$@"; }
 cl() { cd "$1" && ls -1 -t; } 
 clc() { cd "$1" && clear && ls -1 -t; } 
@@ -177,28 +201,37 @@ mdc() { mkdir -p "$1" && cd -P "$1"; }
 pwdcp() {
 	path=$(pwd | tr -d '\n')
 	if [[ -e $1 ]]; then
-		path="${path}/$1"
+		path="$path/$1"
 	fi
 
-	echo -n "$path" | xclip -selection clipboard
+	echo -n "$path" | xclip -selection clipboard &&
+		echo -e "\t-> "$path""
+		# echo -e "\tcopied: "$path""
 }
 
-alias rr='. ranger'
 
 
 
-# GIT
-alias gi='git init && printf "*~\n*#\n*.swp\n\n*test*\n__pycache__/\n\n.gitignore\n" > .gitignore' 
+
+
+# <===== GIT =====>
+alias gi='git init && printf "*~\n*#\n*.swp\nbin/\nobj/\n.env\n.vs\n\n*test*\n__pycache__/\n\n.gitignore\n" >> .gitignore' 
 alias ga='git add .'
 alias gc='git commit --allow-empty-message -m ""'
 gcm() { git commit -m "$1"; }
 alias gp='git push'
+alias gst='git status'
+alias gl='git log --oneline --graph --all'
 gip() { ga && gc && gp; }
+gap() { ga && git commit -m "$1" && gp; }
+mkrepo() { gh repo create "$@" --public --source=. --remote=origin; }
 gr() { git rm --cached "$@"; }
 
 
 
-# LS COLORS BEALLITASAI (~/.dircolors)
+
+
+# <===== LS COLORS BEALLITASAI (~/.dircolors) =====>
 if [ -x /usr/bin/dircolors ]; then
     test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
 
@@ -206,14 +239,14 @@ if [ -x /usr/bin/dircolors ]; then
 fi
 
 
-## MARK ELMENTI AZ AKTUALIS HELYET, JUMP VISSZAUGRIK
-mark() {
-	echo "cd $(pwd)" > ~/.lastdir
-}
-jump() {
-	source ~/.lastdir
-}
-alias rmmark="rm -f ~/.lastdir"
+# MARK ELMENTI AZ AKTUALIS HELYET, JUMP VISSZAUGRIK
+# mark() {
+# 	echo "cd $(pwd)" > ~/.lastdir
+# }
+# jump() {
+# 	source ~/.lastdir
+# }
+# alias rmmark="rm -f ~/.lastdir"
 
 ### SSH-AGENT ÉS SSH KULCS BETOLTESE
 # I. Megoldas
@@ -227,6 +260,25 @@ alias rmmark="rm -f ~/.lastdir"
 #fi
 
 
-# .NET beállítások
+
+# <===== .NET beállítások =====>
 export PATH=$HOME/.dotnet:$HOME/.dotnet/tools:$PATH
 export DOTNET_ROOT=$HOME/.dotnet
+
+
+
+
+
+# <===== ALIASOK ELLENŐRZÉSE =====>
+# Minden inditasnal lefut
+for a in $(alias | cut -d'=' -f1 | cut -d' ' -f2); do
+	# gc: létező program -> graph counter
+    [[ "$a" =~ ^(ls|grep|fgrep|egrep|ip|dir|gc)$ ]] && continue
+
+    overlap=$(type -a "$a" 2>/dev/null | grep -v "is aliased to")
+
+    if [ -n "$overlap" ]; then
+        echo -e "\e[33mINFO:\e[0m Az '$a' alias elfed egy létező programot:"
+        echo "$overlap" | sed 's/^/    -> /'
+    fi
+done
