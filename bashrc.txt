@@ -216,7 +216,7 @@ pwdcp() {
 
 
 # <===== GIT =====>
-alias gi='git init && printf "*~\n*#\n*.swp\nbin/\nobj/\n.env\n.vs\n\n*test*\n__pycache__/\n\n.gitignore\n" >> .gitignore' 
+alias gi='git init && printf "*~\n*#\n*.swp\nbin/\nobj/\n.env\n.vs\n\n*test*\n__pycache__/" >> .gitignore' 
 alias ga='git add .'
 alias gc='git commit --allow-empty-message -m ""'
 gcm() { git commit -m "$1"; }
