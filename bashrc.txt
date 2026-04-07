@@ -53,9 +53,10 @@ alias sabash='cp ~/.bashrc ~/dat/linux/linux-configs/bashrc.txt'
 alias lobash='cp ~/dat/linux/linux-configs/bashrc.txt ~/.bashrc'
 alias savim='cp ~/.vimrc ~/dat/linux/linux-configs/vimrc.txt'
 gitbash() {
-	cp ~/.bashrc /dat/linux/linux-configs/bashrc.txt
-	cp ~/.vimrc /dat/linux/linux-configs/vimrc.txt
-	cp ~/.dircolors /dat/linux/linux-configs/dircolors.txt
+	cp ~/.bashrc ~/dat/linux/linux-configs/bashrc.txt
+	cp ~/.vimrc ~/dat/linux/linux-configs/vimrc.txt
+	cp ~/.dircolors ~/dat/linux/linux-configs/dircolors.txt
+	cp -r ~/dat/linux/scripts/ ~/dat/linux/linux-configs/
 	cd ~/dat/linux/linux-configs	|| return
 	git add .
 	git commit --allow-empty-message -m ''
