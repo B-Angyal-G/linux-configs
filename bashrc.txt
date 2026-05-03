@@ -90,8 +90,8 @@ scr() {
 
 
 # <===== PROGRAMOK =====>
-alias rider='~/opt/JetBrains\ Rider*/bin/rider.sh &'
-alias androids='~/opt/android-studio/bin/studio.sh &'
+alias rider='~/opt/JetBrains\ Rider*/bin/rider &'
+alias androids='~/opt/android-studio/bin/studio &'
 alias godot='~/opt/Godot* &'
 alias rr='. ranger'
 
@@ -216,12 +216,14 @@ pwdcp() {
 
 
 # <===== GIT =====>
-alias gi='git init && printf "*~\n*#\n*.swp\nbin/\nobj/\n.env\n.vs\n\n*test*\n__pycache__/" >> .gitignore' 
+alias gi='git init && git branch -m main && printf "*~\n*#\n*.swp\nbin/\nobj/\n.env\n.vs\n\n*test*\n__pycache__/" >> .gitignore' 
 alias ga='git add .'
 alias gc='git commit --allow-empty-message -m ""'
 gcm() { git commit -m "$1"; }
 alias gp='git push'
+alias gpf='git push --force'
 alias gst='git status'
+alias gsw='git show'
 alias gl='git log --oneline --graph --all'
 gip() { ga && gc && gp; }
 gap() { ga && git commit -m "$1" && gp; }
