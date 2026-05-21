@@ -85,7 +85,8 @@ scr() {
 		vim +3 "$filename"
 	fi
 }
-	
+
+
 
 
 
@@ -196,6 +197,26 @@ cdc() { if [ -z "$1" ]; then
 			cd "$1" && clear
 		fi
 }
+cdu() {
+	local base="/run/media"
+	local num="${1:-1}"
+	local usr_dir device_dir
+
+	if [[ ! "$num" =~ ^[0-9]+$ ]]; then
+        echo "Hiba: csak szám adható meg paraméternek" >&2
+        return 1
+    fi
+
+    user_dir=$(ls "$base" | head -n 1)
+    if [[ -z "$user_dir" ]]; then
+        echo "Hiba: nincs könyvtár a $base alatt" >&2
+        return 1
+    fi
+    
+    device_dir=$(ls "$base/$user_dir" | head -n "$num" | tail -n 1)
+
+    cd "$base/$user_dir/$device_dir" || return 1
+}
 mdc() { mkdir -p "$1" && cd -P "$1"; } 
 
 # Aktualis konyvtar (vagy megadott file) utjanak masolasa clipboardra (enter nelkul a vegen)
@@ -214,7 +235,6 @@ pwdcp() {
 
 
 
-
 # <===== GIT =====>
 alias gi='git init && git branch -m main && printf "*~\n*#\n*.swp\nbin/\nobj/\n.env\n.vs\n\n*test*\n__pycache__/" >> .gitignore' 
 alias ga='git add .'
@@ -223,12 +243,28 @@ gcm() { git commit -m "$1"; }
 alias gp='git push'
 alias gpf='git push --force'
 alias gst='git status'
-alias gsw='git show'
+alias gsw='git show --stat -p'
 alias gl='git log --oneline --graph --all'
 gip() { ga && gc && gp; }
-gap() { ga && git commit -m "$1" && gp; }
+gmp() { ga && git commit -m "$1" && gp; }
 mkrepo() { gh repo create "$@" --public --source=. --remote=origin; }
 gr() { git rm --cached "$@"; }
+
+infogit() {
+echo -e '\t gi\t->\tgit init && git branch -m main && printf "*~\\n*#\\n*.swp\\nbin/\\nobj/\\n.env\\n.vs\\n\\n*test*\\n__pycache__/" >> .gitignore'
+echo -e '\t ga\t->\tgit add .'
+echo -e '\t gc\t->\tgit commit --allow-empty-message -m ""'
+echo -e '\t gcm\t->\tgit commit -m "$1"'
+echo -e '\t gp\t->\tgit push'
+echo -e '\t gpf\t->\tgit push --force'
+echo -e '\t gst\t->\tgit status'
+echo -e '\t gsw\t->\tgit show --stat -p'
+echo -e '\t gl\t->\tgit log --oneline --graph --all'
+echo -e '\t gip\t->\tga && gc && gp'
+echo -e '\t gmp\t->\tga && git commit -m "$1" && gp'
+echo -e '\t mkrepo\t->\tgh repo create "$@" --public --source=. --remote=origin'
+echo -e '\t gr\t->\tgit rm --cached "$@"'
+}
 
 
 
