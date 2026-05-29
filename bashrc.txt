@@ -193,6 +193,7 @@ alias cdp='cd ~/dat/prog'
 alias cdh='cd ~/hdd'
 alias cdd='cd ~/hdd/down'
 alias cpa='cd ~/dat/pannon_egyetem'
+alias cdconf='cd ~/dat/linux/linux-configs'
 unalias md 2>/dev/null
 md() { mkdir -p "$@"; }
 cl() { cd "$1" && ls -1 -t; } 
