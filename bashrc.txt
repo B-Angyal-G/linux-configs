@@ -40,6 +40,7 @@ export PATH="$HOME/.local/bin:$PATH"
 alias sd='sleep 4; killall -q brave 2>/dev/null; sudo shutdown -h now'
 alias sr='sleep 4; killall -q brave 2>/dev/null; sudo shutdown -r now'
 alias sl='sleep 4; killall -q brave 2>/dev/null; systemctl suspend'
+alias sl='sleep 4; killall -q brave 2>/dev/null; systemctl suspend'
 alias up='sudo zypper ref; sudo zypper patch; sudo zypper up'
 
 
