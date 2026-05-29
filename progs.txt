@@ -1,0 +1,10 @@
+gcc
+python
+ranger
+vlc
+brave
+onlyoffice
+steam
+android studio
+rider
+godot
