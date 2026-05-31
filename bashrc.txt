@@ -37,10 +37,23 @@ test -s ~/.alias && . ~/.alias || true
 
 # <===== RENDSZER =====>
 export PATH="$HOME/.local/bin:$PATH"
-alias sd='sleep 4; killall -q brave 2>/dev/null; sudo shutdown -h now'
-alias sr='sleep 4; killall -q brave 2>/dev/null; sudo shutdown -r now'
+alias sd='sleep 4; killall -q brave 2>/dev/null; systemctl poweroff'
+alias sr='sleep 4; killall -q brave 2>/dev/null; systemctl reboot'
 alias sl='sleep 4; killall -q brave 2>/dev/null; systemctl suspend'
-alias up='sudo zypper ref; sudo zypper patch; sudo zypper up'
+up() {
+	local os_info=$(hostnamectl)
+
+	if echo "$os_info" | grep -qi "leap"; then
+		sudo zypper ref &&
+		sudo zypper patch &&
+		sudo zypper up
+		elif echo "$os_info" | grep -qi "tumbleweed"; then
+		sudo zypper ref &&
+		sudo zypper dup
+	else
+		echo "Hiba: nem sikerült azonosítani OpenSUSE verziót"
+	fi
+}
 
 
 
