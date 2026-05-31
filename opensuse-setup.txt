@@ -1,0 +1,32 @@
+Lenovo "í" gomb engedélyezése
+	sudo zypper install keyd
+	sudo mkdir /etc/keyd
+	sudo echo -e "[ids]\n0001:0001\n\n[main]\nrightcontrol = 102nd\n\n[altgr]\nrightcontrol =" > /etc/keyd/default.conf
+	sudo systemctl enable keyd --now
+
+git
+	sudo zypper install git-core
+
+fileok
+	mkdir -p ~/dat/linux
+	git clone git@github.com:B-Angyal-G/linux-configs.git ~/dat/linux
+	cp ~/dat/linux/linux-configs/bashrc.txt ~/.bashrc
+	source ~/.bashrc
+	loadmyconf
+vim
+	curl -fLo ~/.vim/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+	vim-ben: :PlugInstall
+brave
+	sudo zypper addrepo https://brave-browser-rpm-release.s3.brave.com/brave-browser.repo
+	sudo zypper install brave-browser
+c++
+	sudo zypper install gcc-c++
+ranger
+	sudo zypper install ranger
+onlyoffice
+	// flatpak search <prog>
+	sudo flatpak install flathub org.onlyoffice.desktopeditors
+Android Studio
+	sudo flatpak install flathub com.google.AndroidStudio
+Rider
+	sudo flatpak install flathub com.jetbrains.Rider
