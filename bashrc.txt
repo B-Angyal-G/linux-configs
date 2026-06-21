@@ -91,7 +91,7 @@ loadmyconf() {
 	cp ~/dat/linux/linux-configs/vimrc.txt ~/.vimrc
 	cp ~/dat/linux/linux-configs/inputrc.txt ~/.inputrc
 	cp ~/dat/linux/linux-configs/dircolors.txt ~/.dircolors
-	cp ~/dat/linux/linux-configs/scripts/* ~/.scripts
+	cp -r ~/dat/linux/linux-configs/scripts/* ~/.scripts
 }
 alias lbash='source ~/.bashrc'
 

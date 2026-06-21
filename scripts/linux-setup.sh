@@ -56,11 +56,19 @@ fi
 git clone https://github.com/B-Angyal-G/linux-configs
 
 echo "<=== Beállítás ===>"
+mkdir -p ~/.scripts
 cp ~/dat/linux/linux-configs/bashrc.txt ~/.bashrc
 cp ~/dat/linux/linux-configs/vimrc.txt ~/.vimrc
 cp ~/dat/linux/linux-configs/inputrc ~/.inputrc
 cp ~/dat/linux/linux-configs/dircolors.txt ~/.dircolors
-cp ~/dat/linux/linux-configs/scripts/* ~/.scripts
+cp -r ~/dat/linux/linux-configs/scripts/* ~/.scripts
+
+
+
+
+echo "<=== Vim PlugInstaller ===>"
+curl -fLo ~/.vim/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+vim +PlugInstall +qall
 
 
 
@@ -92,6 +100,7 @@ ask_and_install_flatpak "VLC Media Player" "org.videolan.VLC"
 ask_and_install_flatpak "Android Studio" "com.google.AndroidStudio"
 ask_and_install_flatpak "Godot Engine" "org.godotengine.Godot"
 ask_and_install_flatpak "Rider" "com.jetbrains.Rider"
+ask_and_install_flatpak "Flatseal (Flatpak jogosultság kezelő)" "com.github.tchx84.Flatseal"
 
 
 
@@ -107,11 +116,11 @@ echo "<=== Git Configurálása ===>"
 	read -p "---> Git kulcs komment: " gitcomment
 	ssh-keygen -t ed25519 -C "$gitcomment" -f ~/.ssh/id_ed25519
 
-	echo -e "\n\e[32m######################################################################\e[0m"
+	echo -e "\n\e[32m####################################################################\e[0m"
 	echo -e "\e[32m### Az alábbi kulcs hozzáadása szükséges a GitHub-hoz (Settings) ###\e[0m"
-	echo -e "\e[32m######################################################################\e[0m\n"
+	echo -e "\e[32m####################################################################\e[0m\n"
 	cat ~/.ssh/id_ed25519.pub
-	echo -e "\n\e[32m######################################################################\e[0m\n"
+	echo -e "\n\e[32m####################################################################\e[0m\n"
 
 	cd ~/dat/linux/linux-configs
 	git remote set-url origin git@github.com:B-Angyal-G/linux-configs.git
@@ -124,21 +133,21 @@ echo "<=== Git Configurálása ===>"
 confirm=""
 while [[ "${confirm,,}" != "n" && "${confirm,,}" != "y" ]]; do
 	read -p "<=== LENOVO 'í' gomb engedélyezése (y/n): " confirm
-
-	if [[ "${confirm,,}" == "y" ]]; then
-		if [[ "$pkg_manager" == "dnf" ]]; then
-			sudo dnf copr enable alternateved/keyd
-		fi
-		sudo $pkg_manager install -y keyd
-
-		sudo mkdir -p /etc/keyd
-		if [[ -f /etc/keyd/default.conf ]]; then
-			if ! sudo grep -q "rightcontrol" /etc/keyd/default.conf; then
-				sudo bash -c 'echo -e "[ids]\n0001:0001\n\n[main]\nrightcontrol = 102nd\n\n[altgr]\nrightcontrol =" >> /etc/keyd/default.conf'
-			fi
-		else
-			sudo bash -c 'echo -e "[ids]\n0001:0001\n\n[main]\nrightcontrol = 102nd\n\n[altgr]\nrightcontrol =" > /etc/keyd/default.conf'
-		fi
-		sudo systemctl enable keyd --now
-	fi
 done
+
+if [[ "${confirm,,}" == "y" ]]; then
+	if [[ "$pkg_manager" == "dnf" ]]; then
+		sudo dnf copr enable -y alternateved/keyd
+	fi
+	sudo $pkg_manager install -y keyd
+
+	sudo mkdir -p /etc/keyd
+	if [[ -f /etc/keyd/default.conf ]]; then
+		if ! sudo grep -q "rightcontrol" /etc/keyd/default.conf; then
+			sudo bash -c 'echo -e "[ids]\n0001:0001\n\n[main]\nrightcontrol = 102nd\n\n[altgr]\nrightcontrol =" >> /etc/keyd/default.conf'
+		fi
+	else
+		sudo bash -c 'echo -e "[ids]\n0001:0001\n\n[main]\nrightcontrol = 102nd\n\n[altgr]\nrightcontrol =" > /etc/keyd/default.conf'
+	fi
+	sudo systemctl enable keyd --now
+fi
