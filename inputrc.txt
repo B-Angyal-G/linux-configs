@@ -1,0 +1,25 @@
+# Bash parancsvisszakeresés: CTRL + Fel-, le nyíl
+"\e[1;5A": history-search-backward
+"\e[1;5B": history-search-forward
+
+# Kilistázott neveken ugrálás: CTRL + Oldalra nyíl
+"\e[1;5C": forward-word
+"\e[1;5D": backward-word
+
+# Tab kis-, nagybetűérzékenység
+set show-all-if-ambiguous on
+set completion-ignore-case on
+
+# Tab színezés
+set colored-stats on
+set colored-completion-prefix on
+set visible-stats on
+
+# Menü-szerű kiegészítést
+set menu-complete-display-prefix on
+
+# Alt + Jobbra nyíl: Léptetés előre a mappák/fájlok között
+"\e[1;3C": menu-complete
+
+# Alt + Balra nyíl: Léptetés hátrafelé a listában
+"\e[1;3D": menu-complete-backward

@@ -12,7 +12,7 @@
 
 # Some applications read the EDITOR variable to determine your favourite text
 # editor. So uncomment the line below and enter the editor of your choice :-)
-#export EDITOR=/usr/bin/vim
+export EDITOR=/usr/bin/vim
 #export EDITOR=/usr/bin/mcedit
 
 # For some news readers it makes sense to specify the NEWSSERVER variable here
@@ -47,9 +47,11 @@ up() {
 		sudo zypper ref &&
 		sudo zypper patch &&
 		sudo zypper up
-		elif echo "$os_info" | grep -qi "tumbleweed"; then
+	elif echo "$os_info" | grep -qi "tumbleweed"; then
 		sudo zypper ref &&
 		sudo zypper dup
+	elif echo "$os_info" | grep -qi "fedora"; then
+		sudo dnf upgrade
 	else
 		echo "Hiba: nem sikerült azonosítani OpenSUSE verziót"
 	fi
@@ -65,27 +67,37 @@ alias evim='vim ~/.vimrc'
 alias sabash='cp ~/.bashrc ~/dat/linux/linux-configs/bashrc.txt'
 alias lobash='cp ~/dat/linux/linux-configs/bashrc.txt ~/.bashrc'
 alias savim='cp ~/.vimrc ~/dat/linux/linux-configs/vimrc.txt'
+saconf() {
+	cd ~/dat/linux/linux-configs
+	cp ~/.bashrc ./bashrc.txt
+	cp ~/.vimrc ./vimrc.txt
+	cp ~/.inputrc ./inputrc.txt
+	cp ~/.dircolors ./dircolors.txt
+	cp -r ~/.scripts/* ./scripts
+	rm ./*~ 2> /dev/null
+    rm scripts/*~ 2> /dev/null
+	cd - > /dev/null
+}
 gitbash() {
-	cp ~/.bashrc ~/dat/linux/linux-configs/bashrc.txt
-	cp ~/.vimrc ~/dat/linux/linux-configs/vimrc.txt
-	cp ~/.dircolors ~/dat/linux/linux-configs/dircolors.txt
-	cp -r ~/dat/linux/scripts/ ~/dat/linux/linux-configs/
+	saconf
 	cd ~/dat/linux/linux-configs	|| return
 	git add .
 	git commit --allow-empty-message -m ''
 	git push
-	cd -
+	cd - > /dev/null
 }
 loadmyconf() {
 	cp ~/dat/linux/linux-configs/bashrc.txt ~/.bashrc
 	cp ~/dat/linux/linux-configs/vimrc.txt ~/.vimrc
+	cp ~/dat/linux/linux-configs/inputrc.txt ~/.inputrc
 	cp ~/dat/linux/linux-configs/dircolors.txt ~/.dircolors
+	cp ~/dat/linux/linux-configs/scripts/* ~/.scripts
 }
 alias lbash='source ~/.bashrc'
 
 # Script file letrehozasa
 scr() {
-	filename="$1"
+	local filename="$1"
 	
 	if [[ -z "$filename" ]]; then
 		echo "Invalid file name. Did nothing."
@@ -109,9 +121,14 @@ scr() {
 
 
 # <===== PROGRAMOK =====>
-alias rider='~/opt/JetBrains\ Rider*/bin/rider &'
-alias androids='~/opt/android-studio/bin/studio &'
-alias godot='~/opt/Godot* &'
+# alias rider='~/opt/JetBrains\ Rider*/bin/rider &'
+# alias androids='~/opt/android-studio/bin/studio &'
+# alias godot='~/opt/Godot* &'
+alias brave='flatpak run com.brave.Browser'
+alias onlyoffice='flatpak run org.onlyoffice.desktopeditors'
+alias rider='flatpak run com.jetbrains.Rider'
+alias androids='flatpak run com.google.AndroidStudio'
+alias godot='flatpak run org.godotengine.Godot'
 alias rr='. ranger'
 
 
@@ -186,14 +203,13 @@ alias lal='ls -1alh'
 alias lt="ls -1t"
 alias lat='ls -1lath'
 alias c="clear"
-alias ....="cd ../../../.."
 
 # Merevlemezek foglaltsaga
 alias dfp='lsblk -o NAME,FSSIZE,FSUSED,FSAVAIL,FSUSE%,MOUNTPOINTS'
 
 # Szuletesnapok kiiratasa
-alias birthday='~/dat/linux/scripts/disp_birthdays.sh'
-alias nameday='~/dat/linux/scripts/disp_namedays.sh'
+alias birthday='~/.scripts/disp_birthdays.sh'
+alias nameday='~/.scripts/disp_namedays.sh'
 
 
 
@@ -206,6 +222,9 @@ alias cdh='cd ~/hdd'
 alias cdd='cd ~/hdd/down'
 alias cpa='cd ~/dat/pannon_egyetem'
 alias cdconf='cd ~/dat/linux/linux-configs'
+alias ..="cd .."
+alias ...="cd ../.."
+alias ....="cd ../../.."
 unalias md 2>/dev/null
 md() { mkdir -p "$@"; }
 cl() { cd "$1" && ls -1 -t; } 
@@ -236,6 +255,7 @@ cdu() {
 
     cd "$base/$user_dir/$device_dir" || return 1
 }
+rd() { rmdir "$@"; }
 mdc() { mkdir -p "$1" && cd -P "$1"; } 
 
 # Aktualis konyvtar (vagy megadott file) utjanak masolasa clipboardra (enter nelkul a vegen)
@@ -340,3 +360,12 @@ for a in $(alias | cut -d'=' -f1 | cut -d' ' -f2); do
         echo "$overlap" | sed 's/^/    -> /'
     fi
 done
+
+# Bash prompt
+if [ "$color_prompt" = yes ] || [ "$TERM" = "xterm-256color" ]; then
+    # Színes prompt: user@gép: könyvtár [zöld/kék]
+    PS1='${debian_chroot:+($debian_chroot)}\[\033[00;32m\]\u\[\033[00;32m\]@\h\[\033[00m\]:\[\033[00;34m\]\w\[\033[00m\]\$ '
+else
+    # Sima szöveges prompt (ha a terminál nem támogatná a színeket)
+    PS1='${debian_chroot:+($debian_chroot)}\u@\h:\w\$ '
+fi
