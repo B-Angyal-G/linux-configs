@@ -160,6 +160,21 @@ fi
 
 
 
+# USB ne ébresszen
+confirm=""
+while [[ "${confirm,,}" != "n" && "${confirm,,}" != "y" ]]; do
+	read -p "<=== USB-ről ne lehessen alvó módbólébreszteni (y/n): " confirm
+done
+
+if [[ "${confirm,,}" == "y" ]]; then
+	printf 'ACTION=="add", SUBSYSTEM=="usb", ATTR{power/wakeup}=="enabled", ATTR{power/wakeup}="disabled"\n' | sudo tee -a /etc/udev/rules.d/90-usb-wakeup-disable.rules > /dev/null
+	sudo udevadm control --reload-rules
+	sudo udevadm trigger
+fi
+
+
+
+
 # Lenovo "í" gomb
 confirm=""
 while [[ "${confirm,,}" != "n" && "${confirm,,}" != "y" ]]; do
