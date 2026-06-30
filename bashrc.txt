@@ -39,7 +39,7 @@ test -s ~/.alias && . ~/.alias || true
 export PATH="$HOME/.local/bin:$PATH"
 alias sd='sleep 4; killall -q brave 2>/dev/null; systemctl poweroff'
 alias sr='sleep 4; killall -q brave 2>/dev/null; systemctl reboot'
-alias sl='sleep 4; killall -q brave 2>/dev/null; systemctl suspend'
+alias sl='sleep 4; systemctl suspend'
 up() {
 	local os_info=$(hostnamectl)
 
@@ -63,6 +63,7 @@ up() {
 
 # <===== BASH FILE KEZELESEK =====>
 alias ebash='vim ~/.bashrc'
+alias esetuplinux='vim ~/.scripts/linux-setup.sh'
 alias evim='vim ~/.vimrc'
 alias sabash='cp ~/.bashrc ~/dat/linux/linux-configs/bashrc.txt'
 alias lobash='cp ~/dat/linux/linux-configs/bashrc.txt ~/.bashrc'
@@ -116,6 +117,10 @@ scr() {
 	fi
 }
 
+# Letöltés átküldése
+downmovies() {
+	scp "$@" angyal@roach.local:~/hdd/down/torrent-movies/
+}
 
 
 
@@ -264,10 +269,21 @@ pwdcp() {
 	if [[ -e $1 ]]; then
 		path="$path/$1"
 	fi
+	
+	# /home/usr/ -> ~/
+	path=$(echo "$path" | sed "s|^$HOME|~|")
 
-	echo -n "$path" | xclip -selection clipboard &&
-		echo -e "\t-> "$path""
-		# echo -e "\tcopied: "$path""
+	# Ha van wl-copy, megpróbáljuk azt használni
+	if type -p wl-copy >/dev/null; then
+		echo -n "$path" | wl-copy 2>/dev/null 
+			echo -e "\t-> "$path"" && return 0
+	fi
+
+	# Ha a wl-copy nem volt fent, vagy hibát dobott (pl. X11-en vagyunk), jön az xclip
+	if type -p xclip >/dev/null; then
+		echo -n "$path" | xclip -selection clipboard 2>/dev/null
+			echo -e "\t-> "$path"" && return 0
+	fi
 }
 
 
@@ -289,7 +305,7 @@ gmp() { ga && git commit -m "$1" && gp; }
 mkrepo() { gh repo create "$@" --public --source=. --remote=origin; }
 gr() { git rm --cached "$@"; }
 
-infogit() {
+gitinfo() {
 echo -e '\t gi\t->\tgit init && git branch -m main && printf "*~\\n*#\\n*.swp\\nbin/\\nobj/\\n.env\\n.vs\\n\\n*test*\\n__pycache__/" >> .gitignore'
 echo -e '\t ga\t->\tgit add .'
 echo -e '\t gc\t->\tgit commit --allow-empty-message -m ""'
@@ -303,6 +319,23 @@ echo -e '\t gip\t->\tga && gc && gp'
 echo -e '\t gmp\t->\tga && git commit -m "$1" && gp'
 echo -e '\t mkrepo\t->\tgh repo create "$@" --public --source=. --remote=origin'
 echo -e '\t gr\t->\tgit rm --cached "$@"'
+}
+
+
+
+
+
+# <===== Steelseries Rival 3 GEN 2 =====>
+ledcolor() {
+	rivalcfg -l "$1" --z1 "$2" --z2 "$2" --z3 "$2"
+}
+alias ledoff='rivalcfg -l 0'
+ledyellow(){
+	if [[ -n $1 ]]; then
+		ledcolor "$1" 472600
+	else
+		ledcolor 60 472600
+	fi
 }
 
 

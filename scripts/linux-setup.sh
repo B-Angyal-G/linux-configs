@@ -23,23 +23,23 @@ echo "<=== Eszenciális csomagok telepítése (rendszerspecifikusan) ===>"
 if [ "$pkg_manager" == "apt" ]; then
     # DEBIAN
     sudo apt update
-    sudo apt install -y git vim ranger flatpak build-essential gdb cmake python3-pip python3-dev
+    sudo apt install -y git gh vim ranger flatpak build-essential gdb cmake python3-pip python3-dev
     if apt-cache show python3-venv >/dev/null 2>&1; then
         sudo apt install -y python3-venv
     fi
 
 elif [ "$pkg_manager" == "dnf" ]; then
     # FEDORA
-    sudo dnf install -y git vim ranger flatpak gcc-c++ make cmake gdb python3-pip python3-devel
+    sudo dnf install -y git gh vim ranger flatpak gcc-c++ make cmake gdb python3-pip python3-devel
 
 elif [ "$pkg_manager" == "zypper" ]; then
     # OPENSUSE
-    sudo zypper install -y git-core vim ranger flatpak gcc-c++ make glibc-devel gdb cmake python3-pip python3-devel python3-virtualenv
+    sudo zypper install -y git-core gh vim ranger flatpak gcc-c++ make glibc-devel gdb cmake python3-pip python3-devel python3-virtualenv
 
 elif [ "$pkg_manager" == "pacman" ]; then
     # CACHYOS (Arch Linux alapok)
     sudo pacman -Sy --noconfirm
-    sudo pacman -S --noconfirm git vim ranger flatpak base-devel cmake gdb python-pip
+    sudo pacman -S --noconfirm git gh vim ranger flatpak base-devel cmake gdb python-pip
 fi
 
 
@@ -112,6 +112,10 @@ echo "<=== Git Configurálása ===>"
 	git config --global user.name "B-Angyal-G"
 	read -p "---> Git email cím: " gitmail
 	git config --global user.email "$gitmail"
+	# Automatikus upstream beállítás az új ágakhoz
+	git config --global push.autoSetupRemote true
+	# Master -> Main
+	git config --global init.defaultBranch main
 
 	read -p "---> Git kulcs komment: " gitcomment
 	ssh-keygen -t ed25519 -C "$gitcomment" -f ~/.ssh/id_ed25519
@@ -129,7 +133,34 @@ echo "<=== Git Configurálása ===>"
 
 
 
-#Lenovo "í" gomb
+# Steelseries Mouse setup
+confirm=""
+while [[ "${confirm,,}" != "n" && "${confirm,,}" != "y" ]]; do
+	read -p "<=== Steelseries egér illesztőprogramja (y/n): " confirm
+done
+
+if [[ "${confirm,,}" == "y" ]]; then
+	# 1. Rendszercsomag (pipx) telepítése a megfelelő csomagkezelővel
+	if [[ "$pkg_manager" == "pacman" ]]; then
+        sudo pacman -S --noconfirm pipx
+    else
+        sudo "$pkg_manager" install -y pipx
+    fi
+
+	# 2. Pipx környezet frissítése
+	pipx ensurepath
+	# 3. rivalcfg telepítése (TILOS SUDO!)
+	pipx install rivalcfg
+	# 4. Udev szabályok frissítése.
+	sudo ~/.local/bin/rivalcfg --update-udev
+	# 5. Udev szabályok élesítése
+	sudo udevadm control --reload-rules && sudo udevadm trigger
+fi
+
+
+
+
+# Lenovo "í" gomb
 confirm=""
 while [[ "${confirm,,}" != "n" && "${confirm,,}" != "y" ]]; do
 	read -p "<=== LENOVO 'í' gomb engedélyezése (y/n): " confirm
